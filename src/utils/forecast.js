@@ -1,17 +1,24 @@
 const request = require('request')
 
-const forecast = (latitude, longitude, callback) => {
-    const url = 'https://api.darksky.net/forecast/9d1465c6f3bb7a6c71944bdd8548d026/' + latitude + ',' + longitude
-
-    request({ url, json: true }, (error, { body }) => {
-        if (error) {
-            callback('Unable to connect to weather service!', undefined)
-        } else if (body.error) {
-            callback('Unable to find location', undefined)
-        } else {
-            callback(undefined, body.daily.data[0].summary + ' It is currently ' + body.currently.temperature + ' degress out. There is a ' + body.currently.precipProbability + '% chance of rain.')
+const forcast = (latitude,longitude, callback) => 
+{
+    const url = 'http://api.weatherstack.com/current?access_key=13d7e4ef57bcfed648264bc43e72db2a&query=' +latitude +','+ longitude+'&units=f'
+    
+    request({url : url, json:true}, (error,response) =>{
+    
+        if (error)
+        {
+            callback('unable to connect to location services',undefined)
+        }else if (response.body.error)
+        {
+          callback('unable to find Location',undefined)
+        }else
+        {
+            callback(undefined,response.body.current.weather_descriptions + " .It is currently " + response.body.current.temperature
+                  + " degrees out. It feels like " + response.body.current.feelslike 
+                  + " degrees out. And Current humidity is  " + response.body.current.humidity                  + " ;")
         }
     })
 }
 
-module.exports = forecast
+module.exports = forcast
